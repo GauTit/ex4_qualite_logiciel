@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class PersonTest {
 
-	static String name = "george";
+    String name = "george";
 	static char gender = 'M';
 	static int age = 62;
 	static float height = 5.9f;
@@ -21,7 +21,7 @@ public class PersonTest {
 
 	@Before
 	public void setup() {
-		name = "george";
+        name = "george";
 		gender = 'M';
 		age = 62;
 		height = 5.9f;

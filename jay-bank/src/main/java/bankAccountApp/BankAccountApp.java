@@ -13,6 +13,7 @@ import java.util.Scanner;
  */
 public class BankAccountApp {
 
+    private static final String OPERATION_DEPOSIT = "DEPOSIT";
 
 	/**
 	 * @param args the command line arguments
@@ -93,7 +94,7 @@ public class BankAccountApp {
 								System.out.println("Balance is: " + acc1.getBalance());
 							}
 
-							if (operation.equalsIgnoreCase("DEPOSIT")) {
+							if (operation.equalsIgnoreCase(OPERATION_DEPOSIT)) {
 								System.out.println("Enter an amount to deposit");
 								double depositAmount = scan.nextDouble();
 								acc1.depositMoney(depositAmount);
@@ -157,7 +158,7 @@ public class BankAccountApp {
 						System.out.println("Balance is: " + tmpacc.getBalance());
 					}
 
-					if (operation.equalsIgnoreCase("DEPOSIT")) {
+					if (operation.equalsIgnoreCase(OPERATION_DEPOSIT)) {
 						System.out.println("Enter Account number");
 						number = scan.nextInt();
 						BankAccount tmpacc = accManager.findAccount(number);
@@ -194,7 +195,7 @@ public class BankAccountApp {
 						endProgram = true;
 						mainmenu = false;
 					}
-					if (!operation.equalsIgnoreCase("BALANCE") && !operation.equalsIgnoreCase("DEPOSIT")
+					if (!operation.equalsIgnoreCase("BALANCE") && !operation.equalsIgnoreCase(OPERATION_DEPOSIT)
 							&& !operation.equalsIgnoreCase("WITHDRAW") && !operation.equalsIgnoreCase("QUIT")
 							&& !operation.equalsIgnoreCase("MAXIMUM") && !operation.equalsIgnoreCase("MINIMUM")
 							&& !operation.equalsIgnoreCase("AVERAGE") && !operation.equalsIgnoreCase("DELETE")) {
