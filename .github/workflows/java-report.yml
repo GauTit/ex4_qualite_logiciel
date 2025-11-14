@@ -1,0 +1,90 @@
+name: Java File Report
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Permet de lancer manuellement depuis l'interface GitHub
+
+jobs:
+  generate-java-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for compiled .class files (fail if found)
+        run: |
+          echo "🔍 Checking for compiled .class files..."
+          if find . -name "*.class" -print -quit | grep -q .; then
+            echo "❌ ERROR: Compiled .class files found in repository!"
+            echo "This is a bad practice. Found files:"
+            find . -name "*.class"
+            exit 1
+          fi
+          echo "✅ No .class files found"
+
+      - name: Check for .java files (fail if none found)
+        run: |
+          echo "🔍 Checking for .java files..."
+          JAVA_COUNT=$(find . -name "*.java" | wc -l)
+          if [ "$JAVA_COUNT" -eq 0 ]; then
+            echo "❌ ERROR: No .java files found in repository!"
+            exit 1
+          fi
+          echo "✅ Found $JAVA_COUNT Java files"
+
+      - name: Generate Java file report
+        run: |
+          echo "📊 Generating Java file report..."
+          
+          # Initialize report file
+          REPORT_FILE="java-file-report.txt"
+          
+          echo "=== Java File Report for BankApplication ===" > $REPORT_FILE
+          echo "" >> $REPORT_FILE
+          echo "Generated on: $(date '+%Y-%m-%d %H:%M:%S')" >> $REPORT_FILE
+          echo "" >> $REPORT_FILE
+          
+          # Per-file breakdown
+          echo "=== Per-File Breakdown ===" >> $REPORT_FILE
+          echo "" >> $REPORT_FILE
+          
+          find . -name "*.java" | sort | while read file; do
+            lines=$(wc -l < "$file")
+            echo "$file - $lines lines" >> $REPORT_FILE
+          done
+          
+          # Calculate summary
+          JAVA_COUNT=$(find . -name "*.java" | wc -l)
+          TOTAL_LINES=0
+          for file in $(find . -name "*.java"); do
+            TOTAL_LINES=$((TOTAL_LINES + $(wc -l < "$file")))
+          done
+          
+          echo "" >> $REPORT_FILE
+          echo "=== Summary ===" >> $REPORT_FILE
+          echo "Number of .java files: $JAVA_COUNT" >> $REPORT_FILE
+          echo "Total lines of code: $TOTAL_LINES" >> $REPORT_FILE
+          
+          # Display report in console
+          echo ""
+          echo "📄 Report content:"
+          cat $REPORT_FILE
+          echo ""
+          echo "✅ Report generated successfully!"
+
+      - name: Upload java-file-report.txt as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-file-report
+          path: java-file-report.txt
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          echo "✅ Workflow completed successfully!"
+          echo "📦 Artifact 'java-file-report' uploaded"
+          echo "💡 Download it from the Actions tab → Workflow run → Artifacts section"
